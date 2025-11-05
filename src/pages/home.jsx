@@ -1,74 +1,72 @@
-import React from 'react';
+import { useEffect, useState } from "react"
 import {
-  Page,
-  Navbar,
-  NavLeft,
-  NavTitle,
-  NavTitleLarge,
-  NavRight,
-  Link,
-  Toolbar,
-  Block,
-  BlockTitle,
-  List,
-  ListItem,
-  Button
-} from 'framework7-react';
+    Block,
+    BlockTitle,
+    Button,
+    List,
+    ListInput,
+    Navbar,
+    Page,
+} from "framework7-react"
+import { getLocation, getWeather } from "../components/weather"
 
-const HomePage = () => (
-  <Page name="home">
-    {/* Top Navbar */}
-    <Navbar large sliding={false}>
-      <NavLeft>
-        <Link iconIos="f7:menu" iconMd="material:menu" panelOpen="left" />
-      </NavLeft>
-      <NavTitle sliding>Weather App</NavTitle>
-      <NavRight>
-        <Link iconIos="f7:menu" iconMd="material:menu" panelOpen="right" />
-      </NavRight>
-      <NavTitleLarge>Weather App</NavTitleLarge>
-    </Navbar>
-    {/* Toolbar */}
-    <Toolbar bottom>
-      <Link>Left Link</Link>
-      <Link>Right Link</Link>
-    </Toolbar>
-    {/* Page content */}
-    <Block>
-      <p>Here is your blank Framework7 app. Let's see what we have here.</p>
-    </Block>
-    <BlockTitle>Navigation</BlockTitle>
-    <List strong inset dividersIos>
-      <ListItem link="/about/" title="About"/>
-      <ListItem link="/form/" title="Form"/>
-    </List>
+const HomePage = () => {
+    const [address, setAddress] = useState("")
+    const [location, setLocation] = useState(null)
+    const [forecast, setForecast] = useState(null)
 
-    <BlockTitle>Modals</BlockTitle>
-    <Block className="grid grid-cols-2 grid-gap">
-      <Button fill popupOpen="#my-popup">Popup</Button>
-      <Button fill loginScreenOpen="#my-login-screen">Login Screen</Button>
-    </Block>
+    useEffect(() => {
+        if (location && !forecast) {
+            getWeather(location).then((r) => setForecast(r))
+        }
+        if (forecast) console.log(forecast)
+    }, [forecast, location])
 
-    <BlockTitle>Panels</BlockTitle>
-    <Block className="grid grid-cols-2 grid-gap">
-      <Button fill panelOpen="left">Left Panel</Button>
-      <Button fill panelOpen="right">Right Panel</Button>
-    </Block>
+    return (
+        <Page name="home">
+            <Navbar title="Weather App" sliding="{false}"></Navbar>
+            {/* Page content */}
+            <Block>
+                <p>How is the weather where you are today?</p>
+            </Block>
 
-    <List strong inset dividersIos>
-      <ListItem
-        title="Dynamic (Component) Route"
-        link="/dynamic-route/blog/45/post/125/?foo=bar#about"
-      />
-      <ListItem
-        title="Default Route (404)"
-        link="/load-something-that-doesnt-exist/"
-      />
-      <ListItem
-        title="Request Data & Load"
-        link="/request-and-load/user/123456/"
-      />
-    </List>
-  </Page>
-);
-export default HomePage;
+            <BlockTitle>Enter location</BlockTitle>
+            <List strongIos outlineIos>
+                <ListInput
+                    type="text"
+                    placeholder="Enter town, city or postcode"
+                    onChange={(e) => setAddress(e.target.value)}
+                ></ListInput>
+                <Block outlineIos className="grid grid-cols-4 grid-gap">
+                    <Button
+                        small
+                        round
+                        fill
+                        onClick={() => {
+                            getLocation(address).then((r) => setLocation(r))
+                        }}
+                        disabled={!address}
+                    >
+                        Submit
+                    </Button>
+                    <Button
+                        small
+                        round
+                        outline
+                        onClick={() => {
+                            setAddress("")
+                            setLocation(null)
+                            setForecast(null)
+                        }}
+                    >
+                        Clear
+                    </Button>
+                    {/* <Button small round>
+                        Auto
+                    </Button> */}
+                </Block>
+            </List>
+        </Page>
+    )
+}
+export default HomePage
