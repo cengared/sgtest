@@ -1,4 +1,4 @@
-import React from "react"
+import { f7 } from "framework7-react"
 import { CapacitorHttp } from "@capacitor/core"
 
 const apiRoot = "http://api.openweathermap.org"
@@ -12,23 +12,60 @@ export async function getLocation(data) {
             url: url + "/zip",
             params: { zip: data.split(" ")[0] + ",GB", appid: apiKey },
         })
-        return { lat: res.data.lat, lon: res.data.lon }
+        if (res.status !== 200 || !res.data) {
+            f7.dialog.alert("Location not found")
+            return "error"
+        }
+        return { lat: res.data.lat, lon: res.data.lon, name: res.data.name }
     } else {
         const res = await CapacitorHttp.get({
             url: url + "/direct",
-            params: { q: data, limit: 1, appid: apiKey },
+            params: { q: data + ",GB", limit: 1, appid: apiKey },
         })
-        return { lat: res.data[0].lat, lon: res.data[0].lon }
+        if (res.data.length === 0) {
+            f7.dialog.alert("Location not found")
+            return "error"
+        }
+        return {
+            lat: res.data[0].lat,
+            lon: res.data[0].lon,
+            name: res.data[0].name,
+        }
     }
 }
 
-export async function getWeather(location) {
-    console.log(location)
+export async function getWeatherForecast(location) {
     const res = await CapacitorHttp.get({
         url: apiRoot + "/data/3.0/onecall",
-        params: { lat: location.lat, lon: location.lon, appid: apiKey },
+        params: {
+            lat: location.lat,
+            lon: location.lon,
+            appid: apiKey,
+            units: "metric",
+        },
     })
-    console.log(res)
+    if (res.status !== 200 || !res.data) {
+        console.error(res)
+        f7.dialog.alert("Weather data not found")
+        return "error"
+    }
+    return res.data.daily.slice(1, 6)
 }
 
-export async function getDeviceLocation() {}
+export async function getWeatherOverview(location) {
+    const res = await CapacitorHttp.get({
+        url: apiRoot + "/data/3.0/onecall/overview",
+        params: {
+            lat: location.lat,
+            lon: location.lon,
+            appid: apiKey,
+            units: "metric",
+        },
+    })
+    if (res.status !== 200 || !res.data) {
+        console.error(res)
+        f7.dialog.alert("Weather data not found")
+        return "error"
+    }
+    return res.data
+}

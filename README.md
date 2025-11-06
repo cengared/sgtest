@@ -8,13 +8,15 @@
 -   Cleaned out initial home page and added location input area
 -   Connected to OpenWeatherMap APIs for fetching weather and geocoding data
 -   Added input field for sending address query for lat/long data
--   Once useable location data has been retrieved, the latest weather for that location is fetched
--   To do: show weather data once fetched
+-   Once useable location data has been found, the weather for that location is fetched
+-   Show human readable weather overview once fetched
+-   Add error handling for API requests
+-   Show summary of next 5 days forecast in a popup
 
 ### Not delivered
 
 -   Fetching device location with Geolocation plugin
--   Saving data locally for use in multiple sessions
+-   Saving data locally for use offline and across sessions
 -   Make deployable to iOS and Android devices
 
 ## Framework7 CLI Options
