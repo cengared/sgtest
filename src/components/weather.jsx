@@ -1,8 +1,9 @@
 import { f7 } from "framework7-react"
 import { CapacitorHttp } from "@capacitor/core"
+import { OPEN_WEATHER_API_KEY } from "../../keys"
 
-const apiRoot = "http://api.openweathermap.org"
-const apiKey = "f0b167ecf74a4ffedec09cb0ca81cafa"
+const apiRoot = "https://api.openweathermap.org"
+const apiKey = OPEN_WEATHER_API_KEY
 const pcRegex = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/
 
 export async function getLocation(data) {

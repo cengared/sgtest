@@ -35,7 +35,6 @@ node_modules/
 Thumbs.db
 
 
-
 # Capacitor
 ios/App/public/
 !ios/App/public/native-bridge.js
@@ -50,3 +49,4 @@ resources/windows/splash
 
 # Production build
 www/
+keys.js
